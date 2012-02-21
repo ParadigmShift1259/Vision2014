@@ -17,19 +17,18 @@ import edu.wpi.first.wpilibj.networking.NetworkTable;
 public class CaptureImage {
 
     public static void captureFrame() {
-        // 0-default camera, 1 - next...so on
-        final FrameGrabber grabber = new OpenCVFrameGrabber("http://FRC:FRC@10.12.59.11/mjpg/video.mjpg");//new VideoInputFrameGrabber(0);
-        NetworkTable.setTeam(1259);
-        NetworkTable.setIPAddress("10.12.59.2");
+        while(true)
         try {
-            NetworkTable.getTable("camera").putDouble("distance", 0);
-        } catch (Exception e) {
-        }
-        try {
-            grabber.start();
+            final FrameGrabber grabber = new OpenCVFrameGrabber("http://FRC:FRC@10.12.59.11/mjpg/video.mjpg");//new VideoInputFrameGrabber(0);
             CanvasFrame canvas = new CanvasFrame("WebCam");
-            //CanvasFrame before = new CanvasFrame("before");
             canvas.setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
+            try {
+                IplImage splashScreen = new IplImage(cvLoadImage("C:\\loadingScreen\\loadingScreen.jpg"));
+                canvas.showImage(splashScreen);
+            } catch (Exception e) {
+            }
+            //CanvasFrame before = new CanvasFrame("before");
+            grabber.start();
             IplImage img;
             //IplImage hsv;
             //IplImage canny;
@@ -37,13 +36,20 @@ public class CaptureImage {
             IplImage dst;
             PolygonFinder polyFind = new PolygonFinder();
 
+            NetworkTable.setTeam(1259);
+            NetworkTable.setIPAddress("10.12.59.2");
+            try {
+                NetworkTable.getTable("camera").putDouble("distance", 0);
+            } catch (Exception e) {
+            }
 
             while (true) {
                 while (true) {
                     try {
                         //System.out.println("grabbing...");
                         img = new IplImage(grabber.grab());
-                        displayImg = new IplImage(img);
+                        displayImg = new IplImage(cvCreateImage(img.cvSize(), img.depth(), img.nChannels()));
+                        cvCopy(img, displayImg, null);
                         break;
                     } catch (Exception e) {
                         continue;
@@ -141,7 +147,7 @@ public class CaptureImage {
                             double angle = (240 - ((polygons.get(i).getVertex(3).y() + (polygons.get(i).getVertex(2).y())) / 2));
                             double distance = 5182.2043151825 * Math.pow(angle, -1.117990917);
                             System.out.println("y: " + angle + "\tDistance: " + distance);
-                         
+
                             try {
                                 if (distance < 150) {
                                     NetworkTable.getTable("camera").beginTransaction();
@@ -168,19 +174,22 @@ public class CaptureImage {
                         }
                     }
                     //polygons.get(i).drawShape(img, polyColor);
-                    cvLine(img, polygons.get(i).getVertices()[3], polygons.get(i).getVertices()[0], polyColor, 3, CV_AA, 0);
-                    cvLine(img, polygons.get(i).getVertices()[0], polygons.get(i).getVertices()[1], polyColor, 3, CV_AA, 0);
-                    cvDrawCircle(img, polygons.get(i).getVertices()[0], 3, CvScalar.GRAY, 1, 8, 0);
-                    cvLine(img, polygons.get(i).getVertices()[1], polygons.get(i).getVertices()[2], polyColor, 3, CV_AA, 0);
-                    cvDrawCircle(img, polygons.get(i).getVertices()[1], 3, CvScalar.MAGENTA, 1, 8, 0);
-                    cvLine(img, polygons.get(i).getVertices()[2], polygons.get(i).getVertices()[3], polyColor, 3, CV_AA, 0);
-                    cvDrawCircle(img, polygons.get(i).getVertices()[2], 3, CvScalar.BLACK, 1, 8, 0);
-                    cvDrawCircle(img, polygons.get(i).getVertices()[3], 3, CvScalar.CYAN, 1, 8, 0);
+                    cvLine(displayImg, polygons.get(i).getVertices()[3], polygons.get(i).getVertices()[0], polyColor, 3, CV_AA, 0);
+                    cvLine(displayImg, polygons.get(i).getVertices()[0], polygons.get(i).getVertices()[1], polyColor, 3, CV_AA, 0);
+                    cvDrawCircle(displayImg, polygons.get(i).getVertices()[0], 3, CvScalar.GRAY, 1, 8, 0);
+                    cvLine(displayImg, polygons.get(i).getVertices()[1], polygons.get(i).getVertices()[2], polyColor, 3, CV_AA, 0);
+                    cvDrawCircle(displayImg, polygons.get(i).getVertices()[1], 3, CvScalar.MAGENTA, 1, 8, 0);
+                    cvLine(displayImg, polygons.get(i).getVertices()[2], polygons.get(i).getVertices()[3], polyColor, 3, CV_AA, 0);
+                    cvDrawCircle(displayImg, polygons.get(i).getVertices()[2], 3, CvScalar.BLACK, 1, 8, 0);
+                    cvDrawCircle(displayImg, polygons.get(i).getVertices()[3], 3, CvScalar.CYAN, 1, 8, 0);
                     //System.out.println("Polygon " + i + "\t" + polygons.get(i).getVertices()[0]);
                 }
-                if (img != null) {
+                
+                if (displayImg != null) {
                     //cvSaveImage("aftercapture.jpg", dst);
-                    canvas.showImage(img);
+                    cvDrawLine(displayImg, new CvPoint(300, 240), new CvPoint(340, 240), CvScalar.WHITE, 2, 8, 0);
+                    cvDrawLine(displayImg, new CvPoint(320, 220), new CvPoint(320, 260), CvScalar.WHITE, 2, 8, 0);
+                    canvas.showImage(displayImg);
                 } else {
                     //System.out.println("Null Image");
                 }
@@ -189,6 +198,7 @@ public class CaptureImage {
                 cvReleaseImage(newDst);
                 //cvReleaseImage(img);
                 //cvReleaseImage(hsv);
+                cvReleaseImage(displayImg);
                 cvReleaseImage(dst);
                 //Thread.sleep(50);
             }
