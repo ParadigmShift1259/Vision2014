@@ -28,11 +28,12 @@ public class CaptureImage {
         try {
             grabber.start();
             CanvasFrame canvas = new CanvasFrame("WebCam");
-            CanvasFrame before = new CanvasFrame("before");
+            //CanvasFrame before = new CanvasFrame("before");
             canvas.setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
             IplImage img;
             //IplImage hsv;
             //IplImage canny;
+            IplImage displayImg;
             IplImage dst;
             PolygonFinder polyFind = new PolygonFinder();
 
@@ -42,6 +43,7 @@ public class CaptureImage {
                     try {
                         //System.out.println("grabbing...");
                         img = new IplImage(grabber.grab());
+                        displayImg = new IplImage(img);
                         break;
                     } catch (Exception e) {
                         continue;
@@ -78,7 +80,7 @@ public class CaptureImage {
                 //cvCanny(gray, dst, 50, 100, 3);
                 //cvCvtColor(hsv, gray, CV_RGB2GRAY);
                 //canvas.showImage(img);
-                before.showImage(dst);
+                //before.showImage(dst);
                 IplImage newDst = new IplImage(cvCloneImage(img));//cvCreateImage(cvGetSize(img), img.depth(), 3));
                 cvCvtColor(dst, newDst, CV_GRAY2BGR);
                 //cvConvexHull2(newDst, null, CV_CLOCKWISE, 0);
