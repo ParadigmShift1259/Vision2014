@@ -26,7 +26,8 @@ public class CaptureImage {
                 try {
                     String loadingPic = "C:\\loadingScreen\\loadingScreen" + 
                             (((int)(Math.random()*numOfScreens))+1) + ".jpg";
-                    IplImage splashScreen = new IplImage(cvLoadImage("C:\\loadingScreen\\loadingScreen.jpg"));
+                    
+                    IplImage splashScreen = new IplImage(cvLoadImage(loadingPic));
                     canvas.showImage(splashScreen);
                 } catch (Exception e) {
                 }
