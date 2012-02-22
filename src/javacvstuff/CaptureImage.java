@@ -17,12 +17,15 @@ import edu.wpi.first.wpilibj.networking.NetworkTable;
 public class CaptureImage {
 
     public static void captureFrame() {
+        FrameGrabber grabber = new OpenCVFrameGrabber("http://FRC:FRC@10.12.59.11/mjpg/video.mjpg");//new VideoInputFrameGrabber(0);
+        CanvasFrame canvas = new CanvasFrame("WebCam");
+        canvas.setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
+        int numOfScreens = 5;
         while (true) {
             try {
-                final FrameGrabber grabber = new OpenCVFrameGrabber("http://FRC:FRC@10.12.59.11/mjpg/video.mjpg");//new VideoInputFrameGrabber(0);
-                CanvasFrame canvas = new CanvasFrame("WebCam");
-                canvas.setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
                 try {
+                    String loadingPic = "C:\\loadingScreen\\loadingScreen" + 
+                            (((int)(Math.random()*numOfScreens))+1) + ".jpg";
                     IplImage splashScreen = new IplImage(cvLoadImage("C:\\loadingScreen\\loadingScreen.jpg"));
                     canvas.showImage(splashScreen);
                 } catch (Exception e) {
@@ -207,6 +210,7 @@ public class CaptureImage {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            grabber = new OpenCVFrameGrabber("http://FRC:FRC@10.12.59.11/mjpg/video.mjpg");
         }
     }
 
