@@ -13,20 +13,29 @@ import com.googlecode.javacv.CanvasFrame;
 import java.util.ArrayList;
 import com.googlecode.javacv.CameraDevice;
 import edu.wpi.first.wpilibj.networking.NetworkTable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class CaptureImage {
 
     public static void captureFrame() {
         FrameGrabber grabber = new OpenCVFrameGrabber("http://FRC:FRC@10.12.59.11/mjpg/video.mjpg");//new VideoInputFrameGrabber(0);
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(CaptureImage.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
         CanvasFrame canvas = new CanvasFrame("WebCam");
         canvas.setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
         int numOfScreens = 5;
+        String loadingPic = "C:\\loadingScreen\\loadingScreen"
+                + (((int) (Math.random() * numOfScreens)) + 1) + ".bmp";
+        int failedGrabs = 0;
         while (true) {
             try {
                 try {
-                    String loadingPic = "C:\\loadingScreen\\loadingScreen" + 
-                            (((int)(Math.random()*numOfScreens))+1) + ".jpg";
-                    
+
                     IplImage splashScreen = new IplImage(cvLoadImage(loadingPic));
                     canvas.showImage(splashScreen);
                 } catch (Exception e) {
@@ -48,14 +57,22 @@ public class CaptureImage {
                 }
 
                 while (true) {
+                    
                     while (true) {
                         try {
-                            //System.out.println("grabbing...");
+                            System.out.println("grabbing...");
                             img = new IplImage(grabber.grab());
                             displayImg = new IplImage(cvCreateImage(img.cvSize(), img.depth(), img.nChannels()));
                             cvCopy(img, displayImg, null);
+                            System.out.println("Frame GRABBED!");
                             break;
                         } catch (Exception e) {
+                            failedGrabs ++;
+                            System.out.println(failedGrabs);
+                            if(failedGrabs > 30) {
+                                grabber = new OpenCVFrameGrabber("http://FRC:FRC@10.12.59.11/mjpg/video.mjpg");
+                                grabber.start();
+                            }
                             continue;
                         }
                     }
