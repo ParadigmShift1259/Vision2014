@@ -28,7 +28,7 @@ public class CaptureImage {
         
         CanvasFrame canvas = new CanvasFrame("WebCam");
         canvas.setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
-        int numOfScreens = 5;
+        int numOfScreens = 16;
         String loadingPic = "C:\\loadingScreen\\loadingScreen"
                 + (((int) (Math.random() * numOfScreens)) + 1) + ".bmp";
         int failedGrabs = 0;
