@@ -101,7 +101,7 @@ public class CaptureImage {
                     // 50 175 75 //// 100 255 225
                     //cvInRangeS(hsv, cvScalar(0, 200, 0, 0), cvScalar(150, 255, 255, 0), dst);
                     cvDrawLine(img, new CvPoint(0, 360), new CvPoint(639, 360), CvScalar.BLACK, 240, 8, 0);
-                    cvInRangeS(img, cvScalar(0, 200, 0, 0), cvScalar(150, 255, 40, 0), dst);
+                    cvInRangeS(img, cvScalar(100, 215, 0, 0), cvScalar(255, 255, 45, 0), dst);
                     //cvDilate( dst, dst, null, 1 );
                     cvSmooth(dst, dst, CV_MEDIAN, 1, 1, 0, 0);
                     //cvCanny(gray, dst, 50, 100, 3);
