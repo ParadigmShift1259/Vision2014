@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import edu.wpi.first.wpilibj.camera.AxisCamera;
 
 public class CaptureImage {
 
