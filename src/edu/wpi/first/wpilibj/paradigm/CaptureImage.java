@@ -14,9 +14,12 @@ import java.util.logging.Logger;
 import edu.wpi.first.wpilibj.camera.AxisCamera;
 
 public class CaptureImage {
+    
+    
 
     public static void captureFrame() {
-        FrameGrabber grabber = new OpenCVFrameGrabber("http://FRC:FRC@10.12.59.11/mjpg/video.mjpg");//new VideoInputFrameGrabber(0);
+        Object source = "http://FRC:FRC@10.12.59.12/mjpg/video.mjpg";
+        FrameGrabber grabber = new OpenCVFrameGrabber((String) source);//new VideoInputFrameGrabber(0);
         try {
             Thread.sleep(1000);
         } catch (InterruptedException ex) {
@@ -32,7 +35,6 @@ public class CaptureImage {
         while (true) {
             try {
                 try {
-
                     IplImage splashScreen = new IplImage(cvLoadImage(loadingPic));
                     canvas.showImage(splashScreen);
                 } catch (Exception e) {
@@ -67,7 +69,7 @@ public class CaptureImage {
                             failedGrabs ++;
                             System.out.println(failedGrabs);
                             if(failedGrabs > 10) {
-                                grabber = new OpenCVFrameGrabber("http://FRC:FRC@10.12.59.11/mjpg/video.mjpg");
+                                grabber = new OpenCVFrameGrabber((String) source);
                                 grabber.start();
                                 failedGrabs=0;
                             }
@@ -99,7 +101,8 @@ public class CaptureImage {
                     // 50 175 75 //// 100 255 225
                     //cvInRangeS(hsv, cvScalar(0, 200, 0, 0), cvScalar(150, 255, 255, 0), dst);
                     cvDrawLine(img, new CvPoint(0, 360), new CvPoint(639, 360), CvScalar.BLACK, 240, 8, 0);
-                    cvInRangeS(img, cvScalar(100, 215, 0, 0), cvScalar(255, 255, 45, 0), dst);
+//                    cvInRangeS(img, cvScalar(100, 215, 0, 0), cvScalar(255, 255, 45, 0), dst);
+                    cvInRangeS(img, cvScalar(0, 0, 0, 0), cvScalar(255, 255, 255, 0), dst);
                     //cvDilate( dst, dst, null, 1 );
                     cvSmooth(dst, dst, CV_MEDIAN, 1, 1, 0, 0);
                     //cvCanny(gray, dst, 50, 100, 3);
@@ -226,7 +229,7 @@ public class CaptureImage {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            grabber = new OpenCVFrameGrabber("http://FRC:FRC@10.12.59.11/mjpg/video.mjpg");
+            grabber = new OpenCVFrameGrabber((String) source);
         }
     }
 
