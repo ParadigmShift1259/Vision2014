@@ -9,6 +9,7 @@ import static com.googlecode.javacv.cpp.opencv_core.*;
 import com.googlecode.javacv.CanvasFrame;
 import java.util.ArrayList;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
+import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -16,31 +17,28 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 public class CaptureImage {
-    
-    
 
     public static void captureFrame() {
         //---------These objects allow us to edit the variables used in the scalar polygon recognition------
         JLabel blueMaxValueLabel = new JLabel("Max Blue Value");
-        JTextField blueMaxValueField = new JTextField("100.0",5);
-        
+        JTextField blueMaxValueField = new JTextField("100.0", 5);
+
         JLabel blueMinValueLabel = new JLabel("Min Blue Value");
-        JTextField blueMinValueField = new JTextField("255",5);
-        
+        JTextField blueMinValueField = new JTextField("255.0", 5);
+
         JLabel greenMaxValueLabel = new JLabel("Max Green Value");
-        JTextField greenMaxValueField = new JTextField("215.0",5);
-        
+        JTextField greenMaxValueField = new JTextField("215.0", 5);
+
         JLabel greenMinValueLabel = new JLabel("Min Green Value");
-        JTextField greenMinValueField = new JTextField("255",5);
-        
+        JTextField greenMinValueField = new JTextField("255.0", 5);
+
         JLabel redMaxValueLabel = new JLabel("Max Red Value");
-        JTextField redMaxValueField = new JTextField("0.0",5);
-        
+        JTextField redMaxValueField = new JTextField("0.0", 5);
+
         JLabel redMinValueLabel = new JLabel("Min Red Value");
-        JTextField redMinValueField = new JTextField("45",5);
-        
+        JTextField redMinValueField = new JTextField("45.0", 5);
+
         //---------------------------------End object lists-------------------------------------
-        
         String source = "http://FRC:FRC@10.12.59.11/mjpg/video.mjpg";
         FrameGrabber grabber = new OpenCVFrameGrabber(source);//new VideoInputFrameGrabber(0);
         try {
@@ -48,34 +46,38 @@ public class CaptureImage {
         } catch (InterruptedException ex) {
             Logger.getLogger(CaptureImage.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         CanvasFrame canvas = new CanvasFrame("WebCam");
         canvas.setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
         CanvasFrame before = new CanvasFrame("before");
         before.setDefaultCloseOperation(javax.swing.JFrame.HIDE_ON_CLOSE);
-        before.add(blueMaxValueLabel);
-        before.add(blueMaxValueField);
-        before.add(blueMinValueLabel);
-        before.add(blueMinValueField);
-        //before.add(blueMinValueField);
-        before.add(greenMaxValueLabel);
-        before.add(greenMaxValueField);
-        before.add(greenMinValueLabel);
-        before.add(greenMinValueField);
-        //before.add(greenMinValueField);
-        before.add(redMaxValueLabel);
-        before.add(redMaxValueField);
-        before.add(redMinValueLabel);
-        before.add(redMinValueField);
-        //before.add(redMinValueField);
-        
         before.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.anchor = GridBagConstraints.FIRST_LINE_END;
+        before.add(blueMaxValueLabel, gbc);
+        before.add(blueMaxValueField, gbc);
+        before.add(blueMinValueLabel, gbc);
+        before.add(blueMinValueField, gbc);
+        //before.add(blueMinValueField);
+        gbc.anchor = GridBagConstraints.LINE_END;
+        before.add(greenMaxValueLabel, gbc);
+        before.add(greenMaxValueField, gbc);
+        before.add(greenMinValueLabel, gbc);
+        before.add(greenMinValueField, gbc);
+        //before.add(greenMinValueField);
+        gbc.anchor = GridBagConstraints.LAST_LINE_END;
+        before.add(redMaxValueLabel, gbc);
+        before.add(redMaxValueField, gbc);
+        before.add(redMinValueLabel, gbc);
+        before.add(redMinValueField, gbc);
+        //before.add(redMinValueField);
+
         int numOfScreens = 1;
         String loadingPic = "C:\\loadingScreen\\loadingScreen"
                 + (((int) (Math.random() * numOfScreens)) + 1) + ".bmp";
         int failedGrabs = 0;
-                NetworkTable.setTeam(1259);
-                NetworkTable.setIPAddress("10.12.59.2");
+        NetworkTable.setTeam(1259);
+        NetworkTable.setIPAddress("10.12.59.2");
         while (true) {
             try {
                 try {
@@ -97,7 +99,7 @@ public class CaptureImage {
                 }
 
                 while (true) {
-                    
+
                     while (true) {
                         try {
                             //System.out.println("grabbing...");
@@ -107,12 +109,12 @@ public class CaptureImage {
                             //System.out.println("Frame GRABBED!");
                             break;
                         } catch (Exception e) {
-                            failedGrabs ++;
+                            failedGrabs++;
                             System.out.println(failedGrabs);
-                            if(failedGrabs > 10) {
+                            if (failedGrabs > 10) {
                                 grabber = new OpenCVFrameGrabber(source);
                                 grabber.start();
-                                failedGrabs=0;
+                                failedGrabs = 0;
                             }
                             continue;
                         }
@@ -125,7 +127,6 @@ public class CaptureImage {
 //                }
 //            canvas.showImage(img);
 //            return;
-
                     if (img != null) {
                         //cvSaveImage("originalcapture.jpg", img);
                     }
@@ -141,19 +142,17 @@ public class CaptureImage {
                     //30 20 0; 70 140 60
                     // 50 175 75 //// 100 255 225
                     //cvInRangeS(hsv, cvScalar(0, 200, 0, 0), cvScalar(150, 255, 255, 0), dst);
-                    
 //cvDrawLine(img, new CvPoint(0, 360), new CvPoint(639, 360), CvScalar.BLACK, 240, 8, 0);
-                    
                     //cvInRangeS(img, cvScalar(100, 215, 0, 0), cvScalar(255, 255, 45, 0), dst); This is the original
                     //Code used to set max and min values for bgr scale in scalars VVV
                     cvInRangeS(img, cvScalar((new Double(blueMinValueField.getText())).doubleValue(),
                                              (new Double(greenMinValueField.getText())).doubleValue(),
-                                             (new Double(redMinValueField.getText())).doubleValue(),0), 
-                                    cvScalar((new Double(blueMaxValueField.getText())).doubleValue(), 
-                                             (new Double(greenMaxValueField.getText())).doubleValue(), 
+                                             (new Double(redMinValueField.getText())).doubleValue(), 0),
+                                    cvScalar((new Double(blueMaxValueField.getText())).doubleValue(),
+                                             (new Double(greenMaxValueField.getText())).doubleValue(),
                                              (new Double(redMaxValueField.getText())).doubleValue(), 0), dst);
                     //NEED TO FLIP MAX IN MIN POSITION, MIN IS IN MAX POSITION
-                    
+
                     //cvInRangeS(img, cvScalar(0, 0, 0, 0), cvScalar(255, 255, 255, 0), dst);
                     //cvDilate( dst, dst, null, 1 );
                     cvSmooth(dst, dst, CV_MEDIAN, 1, 1, 0, 0);
