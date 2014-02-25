@@ -146,12 +146,12 @@ public class CaptureImage {
                     
                     //cvInRangeS(img, cvScalar(100, 215, 0, 0), cvScalar(255, 255, 45, 0), dst); This is the original
                     //Code used to set max and min values for bgr scale in scalars VVV
-                    cvInRangeS(img, cvScalar((new Double(blueMaxValueField.getText())).doubleValue(),
-                                             (new Double(greenMaxValueField.getText())).doubleValue(),
-                                             (new Double(redMaxValueField.getText())).doubleValue(),0), 
-                                    cvScalar((new Double(blueMinValueField.getText())).doubleValue(), 
-                                             (new Double(greenMinValueField.getText())).doubleValue(), 
-                                             (new Double(redMinValueField.getText())).doubleValue(), 0), dst);
+                    cvInRangeS(img, cvScalar((new Double(blueMinValueField.getText())).doubleValue(),
+                                             (new Double(greenMinValueField.getText())).doubleValue(),
+                                             (new Double(redMinValueField.getText())).doubleValue(),0), 
+                                    cvScalar((new Double(blueMaxValueField.getText())).doubleValue(), 
+                                             (new Double(greenMaxValueField.getText())).doubleValue(), 
+                                             (new Double(redMaxValueField.getText())).doubleValue(), 0), dst);
                     //NEED TO FLIP MAX IN MIN POSITION, MIN IS IN MAX POSITION
                     
                     //cvInRangeS(img, cvScalar(0, 0, 0, 0), cvScalar(255, 255, 255, 0), dst);
