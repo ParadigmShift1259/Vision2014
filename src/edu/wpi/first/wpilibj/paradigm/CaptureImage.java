@@ -21,22 +21,25 @@ public class CaptureImage {
     public static void captureFrame() {
         //---------These objects allow us to edit the variables used in the scalar polygon recognition------
         JLabel blueMaxValueLabel = new JLabel("Max Blue Value");
-        JTextField blueMaxValueField = new JTextField("100.0", 5);
+        JTextField blueMaxValueField = new JTextField("255.0", 5);
 
         JLabel blueMinValueLabel = new JLabel("Min Blue Value");
-        JTextField blueMinValueField = new JTextField("255.0", 5);
+        JTextField blueMinValueField = new JTextField("100.0", 5);
 
         JLabel greenMaxValueLabel = new JLabel("Max Green Value");
-        JTextField greenMaxValueField = new JTextField("215.0", 5);
+        JTextField greenMaxValueField = new JTextField("255.0", 5);
 
         JLabel greenMinValueLabel = new JLabel("Min Green Value");
-        JTextField greenMinValueField = new JTextField("255.0", 5);
+        JTextField greenMinValueField = new JTextField("215.0", 5);
 
         JLabel redMaxValueLabel = new JLabel("Max Red Value");
-        JTextField redMaxValueField = new JTextField("0.0", 5);
+        JTextField redMaxValueField = new JTextField("45.0", 5);
 
         JLabel redMinValueLabel = new JLabel("Min Red Value");
-        JTextField redMinValueField = new JTextField("45.0", 5);
+        JTextField redMinValueField = new JTextField("0.0", 5);
+        
+        JLabel distanceLabel = new JLabel("Distance");
+        JTextField distanceValue = new JTextField(5);
 
         //---------------------------------End object lists-------------------------------------
         String source = "http://FRC:FRC@10.12.59.11/mjpg/video.mjpg";
@@ -51,25 +54,43 @@ public class CaptureImage {
         canvas.setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
         CanvasFrame before = new CanvasFrame("before");
         before.setDefaultCloseOperation(javax.swing.JFrame.HIDE_ON_CLOSE);
-        before.setLayout(new GridBagLayout());
+        GridBagLayout gridBag = new GridBagLayout();
+        before.setLayout(gridBag);
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.anchor = GridBagConstraints.FIRST_LINE_END;
+        gbc.fill = GridBagConstraints.VERTICAL;
+        gridBag.setConstraints(before.getComponent(0), gbc);
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.gridx = 1;
+        gbc.gridy = 0;
         before.add(blueMaxValueLabel, gbc);
+        gbc.gridx = 2;
         before.add(blueMaxValueField, gbc);
+        gbc.gridx = 3;
         before.add(blueMinValueLabel, gbc);
+        gbc.gridx = 4;
         before.add(blueMinValueField, gbc);
         //before.add(blueMinValueField);
-        gbc.anchor = GridBagConstraints.LINE_END;
+        gbc.gridx = 1;
+        gbc.gridy = 2;
         before.add(greenMaxValueLabel, gbc);
+        gbc.gridx = 2;
         before.add(greenMaxValueField, gbc);
+        gbc.gridx = 3;
         before.add(greenMinValueLabel, gbc);
+        gbc.gridx = 4;
         before.add(greenMinValueField, gbc);
         //before.add(greenMinValueField);
-        gbc.anchor = GridBagConstraints.LAST_LINE_END;
+        gbc.gridx = 1;
+        gbc.gridy = 3;
         before.add(redMaxValueLabel, gbc);
+        gbc.gridx = 2;
         before.add(redMaxValueField, gbc);
+        gbc.gridx = 3;
         before.add(redMinValueLabel, gbc);
+        gbc.gridx = 4;
         before.add(redMinValueField, gbc);
+        before.add(distanceLabel);
+        before.add(distanceValue);
         //before.add(redMinValueField);
 
         int numOfScreens = 1;
@@ -217,9 +238,11 @@ public class CaptureImage {
 //                                    + "\tCenter Y: "
 //                                    + (240 - ((polygons.get(i).getVertex(3).y() + (polygons.get(i).getVertex(2).y())) / 2)));
                                 double x = (320 - ((polygons.get(i).getVertex(3).x() + polygons.get(i).getVertex(2).x()) / 2));
-                                double angle = (240 - ((polygons.get(i).getVertex(3).y() + (polygons.get(i).getVertex(2).y())) / 2));
-                                double distance = 5182.2043151825 * Math.pow(angle, -1.117990917);
+                                double angle = (480-((polygons.get(i).getVertex(3).y() + (polygons.get(i).getVertex(2).y())) / 2));
+                                //double distance = 5182.2043151825 * Math.pow(angle, -1);
+                                double distance = 514.7318 * Math.pow(angle-220, -1.2);
                                 System.out.println("y: " + angle + "\tDistance: " + distance);
+                                distanceValue.setText(""+distance);
 
                                 try {
                                     if (distance < 150) {

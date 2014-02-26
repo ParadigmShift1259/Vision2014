@@ -122,9 +122,9 @@ public class PolygonStructure implements ShapeStructure, Comparator<PolygonStruc
         if(Math.abs(o1y-o2y)>10)
         {
             if(o1y>o2y)
-                return (int) o1y;
+                return (int) -o1y;
             else
-                return (int) -o2y;
+                return (int) o2y;
         }
         else if(Math.abs(o1x-o2x)>10)
         {
