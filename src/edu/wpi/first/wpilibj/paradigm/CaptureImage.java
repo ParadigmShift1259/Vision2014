@@ -38,8 +38,8 @@ public class CaptureImage {
         JLabel redMinValueLabel = new JLabel("Min Red Value");
         JTextField redMinValueField = new JTextField("0.0", 5);
         
-        JLabel distanceLabel = new JLabel("Distance");
-        JTextField distanceValue = new JTextField(5);
+        JLabel yLabel = new JLabel("Y");
+        JTextField yValue = new JTextField(5);
 
         //---------------------------------End object lists-------------------------------------
         String source = "http://FRC:FRC@10.12.59.11/mjpg/video.mjpg";
@@ -89,8 +89,8 @@ public class CaptureImage {
         before.add(redMinValueLabel, gbc);
         gbc.gridx = 4;
         before.add(redMinValueField, gbc);
-        before.add(distanceLabel);
-        before.add(distanceValue);
+        before.add(yLabel);
+        before.add(yValue);
         //before.add(redMinValueField);
 
         int numOfScreens = 1;
@@ -241,8 +241,11 @@ public class CaptureImage {
                                 double angle = (480-((polygons.get(i).getVertex(3).y() + (polygons.get(i).getVertex(2).y())) / 2));
                                 //double distance = 5182.2043151825 * Math.pow(angle, -1);
                                 double distance = 514.7318 * Math.pow(angle-220, -1.2);
-                                System.out.println("y: " + angle + "\tDistance: " + distance);
-                                distanceValue.setText(""+distance);
+                                for(int c = 0;c<4;c++){
+                                    System.out.println("Vertex "+ c + ":"+polygons.get(i).getVertex(c).y());
+                                }
+                                yValue.setText(""+angle);
+                                
 
                                 try {
                                     if (distance < 150) {
