@@ -40,6 +40,7 @@ public class CaptureImage {
         
         JLabel yLabel = new JLabel("Y");
         JTextField yValue = new JTextField(5);
+        boolean hotZone;
 
         //---------------------------------End object lists-------------------------------------
         String source = "http://FRC:FRC@10.12.59.11/mjpg/video.mjpg";
@@ -229,6 +230,13 @@ public class CaptureImage {
 //                        break;
 //                    }
                     for (i = 0; i < polygons.size(); i++) {
+                        if(i<polygons.size()){
+                            hotZone = false;
+                            
+                        }else{
+                            hotZone = true;
+                            
+                        }
                         CvScalar polyColor = CvScalar.MAGENTA;
                         switch (i) {
                             case 0: {
@@ -240,7 +248,22 @@ public class CaptureImage {
                                 double x = (320 - ((polygons.get(i).getVertex(3).x() + polygons.get(i).getVertex(2).x()) / 2));
                                 double angle = (480-((polygons.get(i).getVertex(3).y() + (polygons.get(i).getVertex(2).y())) / 2));
                                 //double distance = 5182.2043151825 * Math.pow(angle, -1);
+                                
                                 double distance = 514.7318 * Math.pow(angle-220, -1.2);
+                                //double distance;
+                                if(angle < 317){
+                                    distance = -0.370786516853933*angle + 133.977528089888;
+                                }
+                                else if(angle > 316 && angle < 325){
+                                    distance = -0.184697808038669*angle + 74.9375184489134;
+                                }
+                                else if(angle > 324 && angle < 362){
+                                    distance = -0.140145789191636*angle + 60.5198480748917;
+                                }
+                                else if(angle > 360){
+                                    distance = -0.0702258215380136*angle + 35.3150512441271;
+                                }
+                                
                                 for(int c = 0;c<4;c++){
                                     System.out.println("Vertex "+ c + ":"+polygons.get(i).getVertex(c).y());
                                 }
@@ -252,6 +275,7 @@ public class CaptureImage {
                                         //NetworkTable.getTable("camera").beginTransaction();
                                         NetworkTable.getTable("camera").putNumber("distance", distance);
                                         NetworkTable.getTable("camera").putNumber("x", x);
+                                        NetworkTable.getTable("camera").putBoolean("hotZone", hotZone);
                                         //NetworkTable.getTable("camera").endTransaction();
                                     }
                                 } catch (Exception e) {
@@ -260,6 +284,7 @@ public class CaptureImage {
                                 break;
                             }
                             case 1: {
+                                //Hot zone
                                 polyColor = CvScalar.BLUE;
                                 break;
                             }
