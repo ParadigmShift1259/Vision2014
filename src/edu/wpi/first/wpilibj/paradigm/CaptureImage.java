@@ -232,10 +232,8 @@ public class CaptureImage {
                     for (i = 0; i < polygons.size(); i++) {
                         if(i<polygons.size()){
                             hotZone = false;
-                            
                         }else{
                             hotZone = true;
-                            
                         }
                         CvScalar polyColor = CvScalar.MAGENTA;
                         switch (i) {
