@@ -37,10 +37,10 @@ public class CaptureImage {
 
         JLabel redMinValueLabel = new JLabel("Min Red Value");
         JTextField redMinValueField = new JTextField("0.0", 5);
-        
+
         JLabel yLabel = new JLabel("Y");
         JTextField yValue = new JTextField(5);
-        boolean hotZone;
+        boolean hotZone = false;
 
         //---------------------------------End object lists-------------------------------------
         String source = "http://FRC:FRC@10.12.59.11/mjpg/video.mjpg";
@@ -94,19 +94,21 @@ public class CaptureImage {
         before.add(yValue);
         //before.add(redMinValueField);
 
-        int numOfScreens = 1;
-        String loadingPic = "C:\\loadingScreen\\loadingScreen"
-                + (((int) (Math.random() * numOfScreens)) + 1) + ".bmp";
+        int numOfScreens = 39;
+//        String loadingPic = "C:\\loadingScreen\\loadingScreen"
+//                + (((int) (Math.random() * numOfScreens)) + 1) + ".bmp";
         int failedGrabs = 0;
-        NetworkTable.setTeam(1259);
+        NetworkTable.setTeam(1259); //Capture image requires the setTeam method because it does not have use Smartdashboard which already assigns a team number in the from of a network table
         NetworkTable.setIPAddress("10.12.59.2");
+        NetworkTable.setClientMode();
+        NetworkTable.getTable("SmartDashboard").putBoolean("TestTable", hotZone);
         while (true) {
             try {
-                try {
-                    IplImage splashScreen = new IplImage(cvLoadImage(loadingPic));
-                    canvas.showImage(splashScreen);
-                } catch (Exception e) {
-                }
+//                try {
+//                    IplImage splashScreen = new IplImage(cvLoadImage(loadingPic));
+//                    canvas.showImage(splashScreen);
+//                } catch (Exception e) {
+//                }
                 grabber.start();
                 IplImage img;
                 //IplImage hsv;
@@ -115,10 +117,11 @@ public class CaptureImage {
                 IplImage dst;
                 PolygonFinder polyFind = new PolygonFinder();
 
-                try {
-                    NetworkTable.getTable("camera").putNumber("distance", 0);
-                } catch (Exception e) {
-                }
+//                try {
+//                    NetworkTable.getTable("camera").putNumber("distance", 0);
+//                    NetworkTable.getTable("camera").putBoolean("hotZone", false);
+//                } catch (Exception e) {
+//                }
 
                 while (true) {
 
@@ -168,11 +171,11 @@ public class CaptureImage {
                     //cvInRangeS(img, cvScalar(100, 215, 0, 0), cvScalar(255, 255, 45, 0), dst); This is the original
                     //Code used to set max and min values for bgr scale in scalars VVV
                     cvInRangeS(img, cvScalar((new Double(blueMinValueField.getText())).doubleValue(),
-                                             (new Double(greenMinValueField.getText())).doubleValue(),
-                                             (new Double(redMinValueField.getText())).doubleValue(), 0),
-                                    cvScalar((new Double(blueMaxValueField.getText())).doubleValue(),
-                                             (new Double(greenMaxValueField.getText())).doubleValue(),
-                                             (new Double(redMaxValueField.getText())).doubleValue(), 0), dst);
+                            (new Double(greenMinValueField.getText())).doubleValue(),
+                            (new Double(redMinValueField.getText())).doubleValue(), 0),
+                            cvScalar((new Double(blueMaxValueField.getText())).doubleValue(),
+                                    (new Double(greenMaxValueField.getText())).doubleValue(),
+                                    (new Double(redMaxValueField.getText())).doubleValue(), 0), dst);
                     //NEED TO FLIP MAX IN MIN POSITION, MIN IS IN MAX POSITION
 
                     //cvInRangeS(img, cvScalar(0, 0, 0, 0), cvScalar(255, 255, 255, 0), dst);
@@ -230,9 +233,9 @@ public class CaptureImage {
 //                        break;
 //                    }
                     for (i = 0; i < polygons.size(); i++) {
-                        if(i<polygons.size()){
+                        if (polygons.size() < 2) {
                             hotZone = false;
-                        }else{
+                        } else {
                             hotZone = true;
                         }
                         CvScalar polyColor = CvScalar.MAGENTA;
@@ -244,40 +247,27 @@ public class CaptureImage {
 //                                    + "\tCenter Y: "
 //                                    + (240 - ((polygons.get(i).getVertex(3).y() + (polygons.get(i).getVertex(2).y())) / 2)));
                                 double x = (320 - ((polygons.get(i).getVertex(3).x() + polygons.get(i).getVertex(2).x()) / 2));
-                                double angle = (480-((polygons.get(i).getVertex(3).y() + (polygons.get(i).getVertex(2).y())) / 2));
+                                double angle = (480 - ((polygons.get(i).getVertex(3).y() + (polygons.get(i).getVertex(2).y())) / 2));
                                 //double distance = 5182.2043151825 * Math.pow(angle, -1);
-                                
-                                double distance = 514.7318 * Math.pow(angle-220, -1.2);
-                                //double distance;
-                                if(angle < 317){
-                                    distance = -0.370786516853933*angle + 133.977528089888;
-                                }
-                                else if(angle > 316 && angle < 325){
-                                    distance = -0.184697808038669*angle + 74.9375184489134;
-                                }
-                                else if(angle > 324 && angle < 362){
-                                    distance = -0.140145789191636*angle + 60.5198480748917;
-                                }
-                                else if(angle > 360){
-                                    distance = -0.0702258215380136*angle + 35.3150512441271;
-                                }
-                                
-                                for(int c = 0;c<4;c++){
-                                    System.out.println("Vertex "+ c + ":"+polygons.get(i).getVertex(c).y());
-                                }
-                                yValue.setText(""+angle);
-                                
 
-                                try {
-                                    if (distance < 150) {
-                                        //NetworkTable.getTable("camera").beginTransaction();
-                                        NetworkTable.getTable("camera").putNumber("distance", distance);
-                                        NetworkTable.getTable("camera").putNumber("x", x);
-                                        NetworkTable.getTable("camera").putBoolean("hotZone", hotZone);
-                                        //NetworkTable.getTable("camera").endTransaction();
-                                    }
-                                } catch (Exception e) {
+                                double distance = 514.7318 * Math.pow(angle - 220, -1.2);
+                                //double distance;
+                                if (angle < 317) {
+                                    distance = -0.370786516853933 * angle + 133.977528089888;
+                                } else if (angle > 316 && angle < 325) {
+                                    distance = -0.184697808038669 * angle + 74.9375184489134;
+                                } else if (angle > 324 && angle < 362) {
+                                    distance = -0.140145789191636 * angle + 60.5198480748917;
+                                } else if (angle > 360) {
+                                    distance = -0.0702258215380136 * angle + 35.3150512441271;
                                 }
+
+                                for (int c = 0; c < 4; c++) {
+                                    System.out.println("Vertex " + c + ":" + polygons.get(i).getVertex(c).y());
+                                }
+                                yValue.setText("" + angle);
+
+                                //hotZone = true;
 
                                 break;
                             }
@@ -305,6 +295,16 @@ public class CaptureImage {
                         cvDrawCircle(displayImg, polygons.get(i).getVertices()[2], 3, CvScalar.BLACK, 1, 8, 0);
                         cvDrawCircle(displayImg, polygons.get(i).getVertices()[3], 3, CvScalar.CYAN, 1, 8, 0);
                         //System.out.println("Polygon " + i + "\t" + polygons.get(i).getVertices()[0]);
+                    }
+
+                    try {
+                        //NetworkTable.getTable("camera").beginTransaction();
+//                        NetworkTable.getTable("camera").putNumber("distance", distance);
+//                        NetworkTable.getTable("camera").putNumber("x", x);
+                        NetworkTable.getTable("camera").putBoolean("hotZone", hotZone);
+                            //NetworkTable.getTable("camera").endTransaction();
+
+                    } catch (Exception e) {
                     }
 
                     if (displayImg != null) {
